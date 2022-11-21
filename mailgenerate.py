@@ -171,6 +171,71 @@ else:
             else:
                 pass 
             return {"email":self.email,"token":self.token}
+        """
+        def getinbox(self,email=None):
+            if email == None:
+                email = self.email
+                token = self.token 
+            else:
+                alldata = json.loads(open("data.json","r").read())
+                try:
+                    alldata["emails"][email]
+                    email = alldata["emails"][email]["email"]
+                    token = alldata["emails"][email]["token"]
+                except:
+                    raise ValueError('The email you requested is not existing in the data.json file in your working directory')
+
+            headers2= self.headers
+            headers2["Authorization"] = token
+
+            inboxofemail = json.loads(requests.get("https://tmail2.p.rapidapi.com/messages",headers=headers2).content)
+            try:
+                self.messages = inboxofemail["messages"]
+            except:
+                self.messages = []
+            def details(self,emailindex=0):
+                if emailindex > len(self.messages)-1:
+                    raise IndexError("TGA disposable mail error | inbox out of range")
+                else:
+                    self.subject = messages[emailindex]
+
+
+            return inboxofemail
+        """
+
+    class getinbox(TGAMail):
+        def __init__(self,email=None):
+            super().__init__()
+            if email == None:
+                email = self.email
+                token = self.token 
+            else:
+                alldata = json.loads(open("data.json","r").read())
+                try:
+                    alldata["emails"][email]
+                    email = alldata["emails"][email]["email"]
+                    token = alldata["emails"][email]["token"]
+                except:
+                    raise ValueError('The email you requested is not existing in the data.json file in your working directory')
+
+            headers2= self.headers
+            headers2["Authorization"] = token
+
+            inboxofemail = json.loads(requests.get("https://tmail2.p.rapidapi.com/messages",headers=headers2).content)
+            try:
+                self.messages = inboxofemail["messages"]
+            except:
+                self.messages = []
+            #return inboxofemail
+
+
+
+        def details(self,emailindex=0):
+            if emailindex > len(self.messages)-1:
+                raise IndexError("TGA disposable mail error | inbox out of range")
+            else:
+                self.email = self.messages[emailindex]
+
 
 
 
