@@ -152,7 +152,7 @@ else:
             self.headers={"X-RapidAPI-Key": "62343ab3edmshb82941f2a48ed4fp170497jsn361d447cd4ce","X-RapidAPI-Host": "tmail2.p.rapidapi.com"}
         def getemail(self):
             emaildata = json.loads(requests.get("https://tmail2.p.rapidapi.com/mailbox",headers=self.headers).content)
-
+            
             self.token = emaildata["token"]
             self.email = emaildata["mailbox"]
             if self.save == True:
@@ -218,10 +218,10 @@ else:
                 except:
                     raise ValueError('The email you requested is not existing in the data.json file in your working directory')
 
-            headers2= self.headers
-            headers2["Authorization"] = token
+            self.headers2= self.headers
+            self.headers2["Authorization"] = token
 
-            inboxofemail = json.loads(requests.get("https://tmail2.p.rapidapi.com/messages",headers=headers2).content)
+            inboxofemail = json.loads(requests.get("https://tmail2.p.rapidapi.com/messages",headers=self.headers2).content)
             try:
                 self.messages = inboxofemail["messages"]
             except:
@@ -230,11 +230,26 @@ else:
 
 
 
-        def details(self,emailindex=0):
+        def details(self,emailindex=0,newRequest=False):
+            #New request argument basically helps you to read all html body data and get attachments from email.
+            #If you don't need those I don't recommend you to use it. Because it may slow your program with half a second
+            #Also I will add a function to get links and extract Auth codes(which websites send) from emails
             if emailindex > len(self.messages)-1:
                 raise IndexError("TGA disposable mail error | inbox out of range")
             else:
-                self.email = self.messages[emailindex]
+                self.maildata = self.messages[emailindex]
+            if newRequest == True:
+                try:
+                    messageid = self.maildata["_id"]
+                    maildata = json.loads(requests.get("https://tmail2.p.rapidapi.com/messages/"+messageid,headers=self.headers2).content)
+                    self.maildata = maildata 
+                    self.sender = maildata
+
+                except:
+                    raise IndexError("TGA Err | _id is not defined or you are not connected to Net, report this error to thegreenanarchist@proton.me")
+                
+
+
 
 
 

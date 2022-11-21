@@ -4,6 +4,5 @@ from colorama import Fore
 
 print(Fore.RED,"Welcome to the TGA disposable email example",Fore.RESET)
 gen = mailgenerate.TGAMail(save=True)
-inbox = mailgenerate.getinbox(email="jipefi4166@kuvasin.com")
-inbox.details(0)
-print(inbox.email)
+inbox = mailgenerate.getinbox("jipefi4166@kuvasin.com")
+print(inbox.messages)
