@@ -3,10 +3,12 @@
 # For ethical purposes(!)
 import requests
 from colorama import Fore
-import json 
+import json
 import os
-import time 
+import time
 from bs4 import BeautifulSoup
+
+
 def printf(x):
     print(x)
 if __name__ == "__main__":
@@ -71,9 +73,9 @@ if __name__ == "__main__":
 
             |     **{messages.index(m)}**
             |     From \u001b[34m{whois}\u001b[0m  - \u001b[33m{time.ctime(recievedat)}\u001b[0m
-            |     
+            |
             |     \u001b[35mTitle\u001b[0m : {subject}
-            |     
+            |
             |     \u001b[35mPreview \u001b[0m:{bodyPreview}
             |
             |     {attachmentsCount} 📎
@@ -114,17 +116,25 @@ if __name__ == "__main__":
                 sender = msgdata["from"]
                 subject = m["subject"]
                 try:
-                    bodyPreview = m["bodyHtml"]
+                    #print(json.dumps(msgdata,indent=4))
+                    bodyPreview = msgdata["bodyHtml"]
                 except:
                     bodyPreview = "<h2>No Body Content!</h2>"
-                soup = BeautifulSoup(bodyPreview,"lxml")
+
+                soup = BeautifulSoup(bodyPreview,"html.parser")
                 allinks=[]
                 alllinks1 = soup.find_all("a")
                 for a in alllinks1:
                     href = a.get("href")
                     text = a.get_text()
                     allinks.append(f"{href} ~ {text}")
-                
+                #print("==================")
+                #print(soup.get_text())
+                #print("==================")
+                #for a in allliks:
+                #    print("\u001b[34m ",a.split("~")[0]," ",a.split(a.split("~")[1]))
+                #    print("\n")
+
                 try:
                     print(f"========== \u001b[36mMAIL\u001b[0m by {sender.split('<')[0]} ~ \u001b[33m{sender.split('<')[1].split('>')[0]}\u001b[0m ==========")
                 except:
@@ -139,12 +149,12 @@ if __name__ == "__main__":
                 print("\u001b[35m============================\u001b[0m")
                 print("\u001b[31mSUBJECT\u001b[0m:",subject)
 
-                
+
 
             except Exception as e:
                 print(e)
                 print(Fore.RED,"ERR ",Fore.RESET,"| Message not in the list.")
-            
+
 else:
     class TGAMail:
         def __init__(self,save=False):
@@ -152,7 +162,7 @@ else:
             self.headers={"X-RapidAPI-Key": "62343ab3edmshb82941f2a48ed4fp170497jsn361d447cd4ce","X-RapidAPI-Host": "tmail2.p.rapidapi.com"}
         def getemail(self):
             emaildata = json.loads(requests.get("https://tmail2.p.rapidapi.com/mailbox",headers=self.headers).content)
-            
+
             self.token = emaildata["token"]
             self.email = emaildata["mailbox"]
             if self.save == True:
@@ -169,13 +179,13 @@ else:
                 saver.write(json.dumps(data,indent=4))
 
             else:
-                pass 
+                pass
             return {"email":self.email,"token":self.token}
         """
         def getinbox(self,email=None):
             if email == None:
                 email = self.email
-                token = self.token 
+                token = self.token
             else:
                 alldata = json.loads(open("data.json","r").read())
                 try:
@@ -208,7 +218,7 @@ else:
             super().__init__()
             if email == None:
                 email = self.email
-                token = self.token 
+                token = self.token
             else:
                 alldata = json.loads(open("data.json","r").read())
                 try:
@@ -242,12 +252,12 @@ else:
                 try:
                     messageid = self.maildata["_id"]
                     maildata = json.loads(requests.get("https://tmail2.p.rapidapi.com/messages/"+messageid,headers=self.headers2).content)
-                    self.maildata = maildata 
+                    self.maildata = maildata
                     self.sender = maildata
 
                 except:
                     raise IndexError("TGA Err | _id is not defined or you are not connected to Net, report this error to thegreenanarchist@proton.me")
-                
+
 
 
 
